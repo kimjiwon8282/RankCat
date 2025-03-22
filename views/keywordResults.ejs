@@ -1,0 +1,67 @@
+<!-- views/results.ejs -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>검색 결과</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background-color: #fafafa; }
+    h1 { text-align: center; }
+    table {
+      width: 100%; border-collapse: collapse; background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    thead {
+      background-color: #4CAF50; color: #fff;
+    }
+    th, td {
+      padding: 12px; text-align: center; border-bottom: 1px solid #ddd;
+    }
+    tr:hover { background-color: #f5f5f5; }
+    .container { width: 90%; margin: 0 auto; }
+    .back-link {
+      display: inline-block; margin-top: 20px; text-decoration: none;
+      background: #ddd; padding: 6px 12px; border-radius: 4px; color: #333;
+    }
+    .back-link:hover { background: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>키워드 검색 결과</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>연관키워드</th>
+          <th>PC 월간 검색수</th>
+          <th>모바일 월간 검색수</th>
+          <th>PC 월평균 클릭수</th>
+          <th>모바일 월평균 클릭수</th>
+          <th>경쟁 정도</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% if (keywordList && keywordList.length > 0) { %>
+        <% keywordList.forEach(item => { %>
+          <tr>
+            <td><%= item.relKeyword %></td>
+            <td><%= item.monthlyPcQcCnt %></td>
+            <td><%= item.monthlyMobileQcCnt %></td>
+            <td><%= item.monthlyAvePcClkCnt %></td>
+            <td><%= item.monthlyAveMobileClkCnt %></td>
+            <td><%= item.compIdx %></td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="6">검색 결과가 없습니다.</td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+
+    <a href="/keyword" class="back-link">검색 페이지로 돌아가기</a>
+  </div>
+</body>
+</html>

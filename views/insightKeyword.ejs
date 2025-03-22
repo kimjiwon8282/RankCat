@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>쇼핑 인사이트 - 키워드 트렌드 조회</title>
+  <style>
+    .form-container {
+      width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .form-container label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-container input,
+    .form-container select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .btn-green {
+      background-color: #28a745;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>키워드 트렌드 조회</h1>
+    <% if (error) { %>
+      <p style="color:red;"><%= error %></p>
+    <% } %>
+    <form action="/insight/keyword" method="POST">
+      <label for="period">조회 기간:</label>
+      <select name="period" id="period">
+        <option value="1month" selected>최근 1개월</option>
+        <option value="3months">최근 3개월</option>
+        <option value="6months">최근 6개월</option>
+        <option value="1year">최근 1년</option>
+      </select>
+      <br>
+      <!-- startDate와 endDate는 자바스크립트로 자동 계산 -->
+      <input type="hidden" name="startDate" id="startDate">
+      <input type="hidden" name="endDate" id="endDate">
+      
+      <label for="timeUnit">시간 단위:</label>
+      <select name="timeUnit" id="timeUnit">
+        <option value="date">일</option>
+        <option value="week">주</option>
+        <option value="month" selected>월</option>
+      </select>
+      <br>
+      
+      <label for="category">카테고리 코드:</label>
+      <input type="text" name="category" id="category" placeholder="예: 채소 카테고리 코드">
+      
+      <label for="keywords">키워드 (쉼표로 구분):</label>
+      <input type="text" name="keywords" id="keywords" placeholder="예: 쌈채소, 샐러드">
+      
+      <button class="btn-green" type="submit">조회하기</button>
+    </form>
+  </div>
+  
+  <script>
+    // 날짜를 "yyyy-mm-dd" 형식으로 변환하는 함수
+    function formatDate(date) {
+      const d = new Date(date);
+      let month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+      return [year, month, day].join('-');
+    }
+    
+    function updateDates() {
+      const period = document.getElementById('period').value;
+      const today = new Date();
+      let startDate;
+      switch (period) {
+        case '1month':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+          break;
+        case '3months':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+          break;
+        case '6months':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+          break;
+        case '1year':
+          startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+          break;
+        default:
+          startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+      }
+      document.getElementById('startDate').value = formatDate(startDate);
+      // 종료 날짜는 항상 오늘 날짜로 설정
+      document.getElementById('endDate').value = formatDate(today);
+    }
+    
+    // period 변경 시 업데이트
+    document.getElementById('period').addEventListener('change', updateDates);
+    // 페이지 로드 시 초기 실행: 기본 "최근 1개월" 적용
+    updateDates();
+  </script>
+</body>
+</html>

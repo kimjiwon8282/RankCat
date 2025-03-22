@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>쇼핑인사이트 검색</title>
+</head>
+<body>
+  <h1>쇼핑인사이트 - 쌈채소 데이터 조회</h1>
+  <% if(error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+  <form action="/insight/category" method="POST">
+    <label for="period">조회 기간:</label>
+    <select name="period" id="period">
+      <option value="1month" selected>최근 1개월</option>
+      <option value="3months">최근 3개월</option>
+      <option value="6months">최근 6개월</option>
+      <option value="1year">최근 1년</option>
+    </select>
+    <br>
+    <!-- startDate와 endDate는 자바스크립트로 자동 계산 -->
+    <input type="hidden" name="startDate" id="startDate">
+    <input type="hidden" name="endDate" id="endDate">
+    
+    <label for="timeUnit">시간 단위:</label>
+    <select name="timeUnit" id="timeUnit">
+      <option value="date">일</option>
+      <option value="week">주</option>
+      <option value="month" selected>월</option>
+    </select>
+    <br>
+    <button type="submit">조회</button>
+  </form>
+  
+  <script>
+    function formatDate(date) {
+      const d = new Date(date);
+      let month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+      return [year, month, day].join('-');
+    }
+    
+    function updateDates() {
+      const period = document.getElementById('period').value;
+      const today = new Date();
+      let startDate;
+      switch (period) {
+        case '1month':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+          break;
+        case '3months':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+          break;
+        case '6months':
+          startDate = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+          break;
+        case '1year':
+          startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+          break;
+        default:
+          startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+      }
+      document.getElementById('startDate').value = formatDate(startDate);
+      document.getElementById('endDate').value = formatDate(today);
+    }
+    
+    document.getElementById('period').addEventListener('change', updateDates);
+    // 페이지 로드 시 초기 실행: 기본 "최근 1개월" 적용
+    updateDates();
+  </script>
+</body>
+</html>
