@@ -13,11 +13,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // 필요하다면 정적 파일 서빙
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const keywordRouter = require('./router/searchadApi');
 const InsightCategoryRouter = require('./router/shopCategoryApi');
 const InsightKeywordRouter = require('./router/shopKeywordApi')
+
 // 홈 라우트 추가
 app.get('/', (req, res) => {
   res.render('home', { error: null });
